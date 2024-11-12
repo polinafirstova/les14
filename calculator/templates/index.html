@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Калькулятор</title>
+    <style>
+        .active {
+            background: gray;
+            border: 1px solid;
+            border-radius: 4px;
+            font-size: 15px;
+        }
+    </style>
+    <script>
+        async function calculate(operation, button) {
+            const x = parseFloat(document.getElementById('number1').value);
+            const y = parseFloat(document.getElementById('number2').value);
+
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            button.classList.add('active');
+
+            const response = await fetch('/calculate/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({x, y, operation}),
+            });
+
+            const data = await response.json();
+            document.getElementById('result').innerText = data.result;
+        }
+    </script>
+</head>
+<body>
+    <h1>Мини калькулятор</h1>
+    <input type="number" id="number1" placeholder="Введите первое число">
+    <button onclick="calculate('add', this)">+</button>
+    <button onclick="calculate('subtract', this)">-</button>
+    <button onclick="calculate('multiply', this)">*</button>
+    <button onclick="calculate('divide', this)">/</button>
+    <input type="number" id="number2" placeholder="Введите второе число">
+    <span>=</span>
+    <span id="result"></span>
+</body>
+</html>
